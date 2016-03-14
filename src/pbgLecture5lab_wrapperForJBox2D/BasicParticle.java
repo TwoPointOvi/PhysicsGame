@@ -23,7 +23,7 @@ public class BasicParticle  {
 	protected final Body body;
 
 
-	public BasicParticle(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction) {
+	public BasicParticle(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, float restitution) {
 		World w=BasicPhysicsEngineUsingBox2D.world; // a Box2D object
 		BodyDef bodyDef = new BodyDef();  // a Box2D object
 		bodyDef.type = BodyType.DYNAMIC; // this says the physics engine is to move it automatically
@@ -36,7 +36,7 @@ public class BasicParticle  {
 		fixtureDef.shape = circleShape;
 		fixtureDef.density = (float) (mass/(Math.PI*radius*radius));
 		fixtureDef.friction = 0.0f;// this is surface friction;
-		fixtureDef.restitution = 1.0f;
+		fixtureDef.restitution = restitution;
 		body.createFixture(fixtureDef);
 		this.rollingFriction=rollingFriction;
 		this.mass=mass;

@@ -30,6 +30,9 @@ public class BasicPolygon  {
 	public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides) {
 		this(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides);
 	}
+        public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides, BodyType bType) {
+		this(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides,bType);
+	}
 	public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, Path2D.Float polygonPath, int numSides) {
 		World w=BasicPhysicsEngineUsingBox2D.world; // a Box2D object
 		BodyDef bodyDef = new BodyDef();  // a Box2D object
@@ -64,7 +67,47 @@ public class BasicPolygon  {
 		this.rollingFriction=rollingFriction;
 		this.mass=mass;
 		this.ratioOfScreenScaleToWorldScale=BasicPhysicsEngineUsingBox2D.convertWorldLengthToScreenLength(1);
-		System.out.println("Screenradius="+ratioOfScreenScaleToWorldScale);
+		//System.out.println("Screenradius="+ratioOfScreenScaleToWorldScale);
+		this.col=col;
+		this.polygonPath=polygonPath;
+	}
+	
+        public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, Path2D.Float polygonPath, int numSides, BodyType bType) {
+		World w=BasicPhysicsEngineUsingBox2D.world; // a Box2D object
+		BodyDef bodyDef = new BodyDef();  // a Box2D object
+		bodyDef.type = bType;
+		bodyDef.position.set(sx, sy);
+		bodyDef.linearVelocity.set(vx, vy);
+		bodyDef.angularDamping = 0.0f;
+                bodyDef.angle = (float)((float) 45 / 180 * Math.PI); //change the angle of object
+		this.body = w.createBody(bodyDef);
+		PolygonShape shape = new PolygonShape();
+		Vec2[] vertices = verticesOfPath2D(polygonPath, numSides);
+		shape.set(vertices, numSides);
+		FixtureDef fixtureDef = new FixtureDef();// This class is from Box2D
+		fixtureDef.shape = shape;
+		fixtureDef.density = (float) (mass/((float) numSides)/2f*(radius*radius)*Math.sin(2*Math.PI/numSides));
+		fixtureDef.friction = 0.1f;// this is surface friction;
+		fixtureDef.restitution = 0.5f;
+		body.createFixture(fixtureDef);
+
+//		// code to test adding a second fixture:
+//		PolygonShape shape2 = new PolygonShape();
+//		Vec2[] vertices2 = verticesOfPath2D(polygonPath, numSides);
+//		for (int i=0;i<vertices2.length;i++) {
+//			vertices2[i]=new Vec2(vertices2[i].x+0.7f,vertices2[i].y+0.7f);
+//		}
+//		shape2.set(vertices2, numSides);
+//		FixtureDef fixtureDef2 = new FixtureDef();// This class is from Box2D
+//		fixtureDef2.shape = shape2;
+//		fixtureDef2.density = 1;//(float) (mass/(Math.PI*radius*radius));
+//		fixtureDef2.friction = 0.1f;
+//		fixtureDef2.restitution = 0.5f;
+//		body.createFixture(fixtureDef2);
+		this.rollingFriction=rollingFriction;
+		this.mass=mass;
+		this.ratioOfScreenScaleToWorldScale=BasicPhysicsEngineUsingBox2D.convertWorldLengthToScreenLength(1);
+		//System.out.println("Screenradius="+ratioOfScreenScaleToWorldScale);
 		this.col=col;
 		this.polygonPath=polygonPath;
 	}

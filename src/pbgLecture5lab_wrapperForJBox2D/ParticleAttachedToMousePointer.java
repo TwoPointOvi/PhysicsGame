@@ -14,7 +14,7 @@ public class ParticleAttachedToMousePointer extends BasicParticle  {
 
 	public ParticleAttachedToMousePointer(float sx, float sy, float vx, float vy, float radius,
 			float mass) {
-		super(sx, sy, vx, vy, radius, Color.CYAN, mass, 0.0f);
+		super(sx, sy, vx, vy, radius, Color.CYAN, mass, 0.0f, 1.0f);
 		body.setType(BodyType.KINEMATIC);// this means we will take care of this particle's motion ourselves.
 			
 	}

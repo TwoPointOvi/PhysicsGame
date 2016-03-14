@@ -27,7 +27,7 @@ public class BasicMouseListener extends MouseInputAdapter {
 		mouseX=e.getX();
 		mouseY=e.getY();
 		mouseButtonPressed=false;
-		System.out.println("Move event: "+mouseX+","+mouseY);
+		//System.out.println("Move event: "+mouseX+","+mouseY);
 		if (mouseJoint!=null) {
 			// we're obviously not dragging any more, so drop the current mouseJoint
 			linkMouseDragEventToANewMouseJoint(null);

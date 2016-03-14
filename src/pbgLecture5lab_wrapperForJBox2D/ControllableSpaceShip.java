@@ -22,7 +22,7 @@ public class ControllableSpaceShip extends BasicParticle  {
 
 	public ControllableSpaceShip(float sx, float sy, float vx, float vy, float radius, boolean improvedEuler,
 			float mass) {
-		super(sx, sy, vx, vy, radius, Color.CYAN, mass, 0f);
+		super(sx, sy, vx, vy, radius, Color.CYAN, mass, 0f, 1.0f);
 	}
 	
 	@Override
@@ -42,22 +42,15 @@ public class ControllableSpaceShip extends BasicParticle  {
 		g.setColor(col);
 
 		g.fillPolygon(XP, YP, XP.length);
-		if (BasicKeyListener.isThrustKeyPressed()) {
-			g.setColor(Color.red);
-			g.fillPolygon(XPTHRUST, YPTHRUST, XPTHRUST.length);
-		}
+		
 		g.setTransform(at);
 	}
 	
 	@Override
 	public void notificationOfNewTimestep() {
-		if (BasicKeyListener.isRotateLeftKeyPressed()) 
+		if (BasicKeyListener.isLeftKeyPressed()) 
 			angle+=STEER_RATE * DELTA_T;
-		if (BasicKeyListener.isRotateRightKeyPressed()) 
+		if (BasicKeyListener.isRightKeyPressed()) 
 			angle-=STEER_RATE * DELTA_T;
-		if (BasicKeyListener.isThrustKeyPressed()) {
-			Vec2 force = new Vec2((float)(-Math.sin(angle)*MAGNITUDE_OF_ENGINE_THRUST_FORCE), (float)(Math.cos(angle)*MAGNITUDE_OF_ENGINE_THRUST_FORCE));
-			body.applyForceToCenter(force);
-		}
 	}
 }
