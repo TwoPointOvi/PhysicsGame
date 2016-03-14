@@ -8,7 +8,7 @@ public class BasicKeyListener extends KeyAdapter {
 	 * Creation Date: 2016-01-28
 	 * Significant changes applied:
 	 */
-	private static boolean rightKeyPressed, leftKeyPressed; 
+	private static boolean rightKeyPressed, leftKeyPressed, spaceKeyPressed; 
 
 	public static boolean isRightKeyPressed() {
 		return rightKeyPressed;
@@ -17,16 +17,26 @@ public class BasicKeyListener extends KeyAdapter {
 	public static boolean isLeftKeyPressed() {
 		return leftKeyPressed;
 	}
+        
+        public static boolean isSpaceKeyPressed() {
+            return spaceKeyPressed;
+        }
+        public static void falseSpaceKey() {
+            spaceKeyPressed=false;
+        }
 
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch (key) {
 		case KeyEvent.VK_LEFT:
-			leftKeyPressed=true;
-			break;
+                    leftKeyPressed=true;
+                    break;
 		case KeyEvent.VK_RIGHT:
-			rightKeyPressed=true;
-			break;
+                    rightKeyPressed=true;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    spaceKeyPressed=true;
+                    break;
 		}
 	}
 
@@ -34,11 +44,14 @@ public class BasicKeyListener extends KeyAdapter {
 		int key = e.getKeyCode();
 		switch (key) {
 		case KeyEvent.VK_LEFT:
-			leftKeyPressed=false;
-			break;
+                    leftKeyPressed=false;
+                    break;
 		case KeyEvent.VK_RIGHT:
-			rightKeyPressed=false;
-			break;
+                    rightKeyPressed=false;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    spaceKeyPressed=false;
+                    break;
 		}
 	}
 }

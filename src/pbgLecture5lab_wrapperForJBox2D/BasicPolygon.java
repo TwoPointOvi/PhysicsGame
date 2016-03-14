@@ -22,7 +22,7 @@ public class BasicPolygon  {
 	 */
 	public final float ratioOfScreenScaleToWorldScale;
 
-	private final float rollingFriction,mass;
+	public final float rollingFriction,mass;
 	public final Color col;
 	protected final Body body;
 	private final Path2D.Float polygonPath;
@@ -160,5 +160,10 @@ public class BasicPolygon  {
 		p.closePath();
 		return p;
 	}
+        
+        //Return the position of the body
+        public Vec2 getPosition() {
+            return body.getPosition();
+        }
 	
 }

@@ -11,6 +11,7 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.joints.MouseJoint;
 
+import pbgLecture5lab_wrapperForJBox2D.BasicKeyListener;
 
 public class BasicPhysicsEngineUsingBox2D {
 	/* Author: Michael Fairbank
@@ -36,6 +37,21 @@ public class BasicPhysicsEngineUsingBox2D {
 	// estimate for time between two frames in seconds 
 	public static final float DELTA_T = DELAY / 1000.0f;
 	
+        //Ball characteristics
+        float ballRollingFriction = 0f;
+        float ballRadius = 0.15f;
+        float ballMass = 2f;
+        float ballRestitition = 1.0f;
+        
+        //Bullet characteristics
+        float bulletRollingFriction = 0f;
+        float bulletSpeed = 3.2f;
+        float bulletRadius = 0.05f;
+        float bulletMass = 1f;
+        float bulletRestitution = 0f;
+        
+        //Player characteristics
+        float playerRadius = 0.3f;
 	
 	public static int convertWorldXtoScreenX(float worldX) {
 		return (int) (worldX/WORLD_WIDTH*SCREEN_WIDTH);
@@ -72,11 +88,7 @@ public class BasicPhysicsEngineUsingBox2D {
 		barriers = new ArrayList<AnchoredBarrier>();
 		connectors=new ArrayList<ElasticConnector>();
 		LayoutMode layout=LayoutMode.RECTANGLE;
-		// pinball:
-                float ballRollingFriction = 0f;
-                float ballRadius = 0.15f;
-                float ballMass = 2f;
-                float ballRestitition = 1.0f;
+                
 		float rollingFriction = .02f;
 		float r=.3f;
 //			rectangles.add(new BasicRectangle(WORLD_WIDTH/2,WORLD_HEIGHT*3/4,  -4,3, r*4, r*8, 0, 5,  false, Color.BLUE, 1,0.5));
@@ -87,7 +99,7 @@ public class BasicPhysicsEngineUsingBox2D {
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*2,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*4,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.3f,-1.2f*s,1.2f*s, r*2,Color.WHITE, 1, rollingFriction,5));
-		polygons.add(new BasicPolygon(WORLD_WIDTH/2,r,0,0, r,Color.YELLOW, 1, rollingFriction,4,BodyType.KINEMATIC));
+		polygons.add(new BasicPlayer(WORLD_WIDTH/2,playerRadius,0,0, playerRadius,Color.YELLOW, 1, rollingFriction,4,BodyType.DYNAMIC));
 		
 //		particles.add(new BasicParticle(WORLD_WIDTH/2+2,WORLD_HEIGHT/2+2f,-1.2f*s,-1.4f*s, r,Color.BLUE, 2, 0));
 //		particles.add(new BasicParticle(3*r+WORLD_WIDTH/2,WORLD_HEIGHT/2,2,6.7f, r*3,Color.BLUE, 90, 0));
@@ -105,28 +117,6 @@ public class BasicPhysicsEngineUsingBox2D {
 //		world.createJoint(jointDef);
 //		
 
-		
-
-		if (false) {
-			// spaceship flying under gravity
-			particles.add(new ControllableSpaceShip(3*r+WORLD_WIDTH/2+1,WORLD_HEIGHT/2-2,0f,2f, r,true, 2*4));
-		} else if (false) {
-			// spaceship flying with dangling pendulum
-			double springConstant=1000000, springDampingConstant=1000;
-			double hookesLawTruncation=0.2;
-			particles.add(new ControllableSpaceShip(3*r+WORLD_WIDTH/2+1,WORLD_HEIGHT/2-2,0f,2f, r,true, 2*4));
-			particles.add(new BasicParticle(3*r+WORLD_WIDTH/2+1,WORLD_HEIGHT/2-4,-3f,9.7f, r,Color.BLUE, 2*4, rollingFriction, 1.0f));
-			connectors.add(new ElasticConnector(particles.get(0), particles.get(1), r*6, springConstant, springDampingConstant, false, Color.WHITE, hookesLawTruncation));
-		} 
-		
-		
-		
-		if (false) {
-			Random x=new Random(3);
-			for (int i=0;i<40;i++) {
-				particles.add(new BasicParticle((0.5f+0.3f*(x.nextFloat()-.5f))*WORLD_HEIGHT,(0.5f+0.3f*(x.nextFloat()-.5f))*WORLD_WIDTH,0f,0f, r/2,new Color(x.nextFloat(), x.nextFloat(), x.nextFloat()), .2f, rollingFriction, 1.0f));				
-			}
-		}
 		
 		//particles.add(new BasicParticle(r,r,5,12, r,false, Color.GRAY, includeInbuiltCollisionDetection));
 
@@ -182,6 +172,14 @@ public class BasicPhysicsEngineUsingBox2D {
 	public void update() {
 		int VELOCITY_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
 		int POSITION_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
+                
+                if (BasicKeyListener.isSpaceKeyPressed()) {
+                    float sx = polygons.get(0).getPosition().x;
+                    float sy = polygons.get(0).getPosition().y;
+                    polygons.add(new BasicPolygon(sx,sy+0.3f,0,bulletSpeed, bulletRadius,Color.RED, bulletMass, bulletRollingFriction,3, BodyType.KINEMATIC));
+                    BasicKeyListener.falseSpaceKey();
+                }
+                
 		for (BasicParticle p:particles) {
 			// give the objects an opportunity to add any bespoke forces, e.g. rolling friction
 			p.notificationOfNewTimestep();
