@@ -37,6 +37,12 @@ public class BasicPhysicsEngineUsingBox2D {
 	// estimate for time between two frames in seconds 
 	public static final float DELTA_T = DELAY / 1000.0f;
 	
+        //Collision categories
+        int BOUNDARY = 0x0001;
+        int PLAYER = 0x0002;
+        int PARTICLE = 0x0003;
+        int BULLET = 0x0004;
+        
         //Ball characteristics
         float ballRollingFriction = 0f;
         float ballRadius = 0.15f;
@@ -45,7 +51,7 @@ public class BasicPhysicsEngineUsingBox2D {
         
         //Bullet characteristics
         float bulletRollingFriction = 0f;
-        float bulletSpeed = 3.2f;
+        float bulletSpeed = 7.5f;
         float bulletRadius = 0.05f;
         float bulletMass = 1f;
         float bulletRestitution = 0f;
@@ -78,7 +84,7 @@ public class BasicPhysicsEngineUsingBox2D {
 	public List<ElasticConnector> connectors;
 	public static MouseJoint mouseJointDef;
 	
-	public static enum LayoutMode {RECTANGLE};
+	public static enum LayoutMode {RECTANGLE, PINBALL_ARENA};
 	public BasicPhysicsEngineUsingBox2D() {
 		world = new World(new Vec2(0, -GRAVITY));// create Box2D container for everything
 		world.setContinuousPhysics(true);
@@ -96,6 +102,7 @@ public class BasicPhysicsEngineUsingBox2D {
 
 		float s=1.2f;
 		particles.add(new BasicParticle(0,WORLD_HEIGHT/2+2f,1.0f*s,0, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
+		particles.add(new BasicParticle(5*WORLD_WIDTH/6,WORLD_HEIGHT/2+2f,-1.0f*s,0, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*2,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*4,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.3f,-1.2f*s,1.2f*s, r*2,Color.WHITE, 1, rollingFriction,5));
@@ -134,18 +141,23 @@ public class BasicPhysicsEngineUsingBox2D {
 				barriers.add(new AnchoredBarrier_StraightLine(0, WORLD_HEIGHT, 0, 0, Color.WHITE));
 				break;
 			}
+                        
+                        case PINBALL_ARENA: {
+				// These would be better created as a JBox2D "chain" type object for efficiency and potentially better collision detection at joints. 
+				// simple pinball board
+				barriers.add(new AnchoredBarrier_StraightLine(0, 0, WORLD_WIDTH, 0, Color.WHITE));
+				barriers.add(new AnchoredBarrier_StraightLine(WORLD_WIDTH, 0, WORLD_WIDTH, WORLD_HEIGHT, Color.WHITE));
+				barriers.add(new AnchoredBarrier_StraightLine(WORLD_WIDTH, WORLD_HEIGHT, 0, WORLD_HEIGHT, Color.WHITE));
+				barriers.add(new AnchoredBarrier_StraightLine(0, WORLD_HEIGHT, 0, 0, Color.WHITE));
+				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH/2, WORLD_HEIGHT-WORLD_WIDTH/2, WORLD_WIDTH/2, 0.0f, 200.0f,Color.WHITE));
+				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH/2, WORLD_HEIGHT*3/4, WORLD_WIDTH/15, -0.0f, 360.0f,Color.WHITE));
+				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH*1/3, WORLD_HEIGHT*1/2, WORLD_WIDTH/15, -0.0f, 360.0f,Color.WHITE));
+				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH*2/3, WORLD_HEIGHT*1/2, WORLD_WIDTH/15, -0.0f, 360.0f,Color.WHITE));
+				break;
+			}
 		}
 	}
-	
-	private static Vec2 rotateVec(Vec2 v, double angle) {
-		// I couldn't find a rotate function in Vec2 so had to write own temporary one here, just for the sake of 
-		// cushion rotation for snooker table...
-		float cos = (float) Math.cos(angle);
-		float sin = (float) Math.sin(angle);
-		float nx = v.x * cos - v.y * sin;
-		float ny = v.x * sin + v.y * cos;
-		return new Vec2(nx,ny);
-	}
+        
 	public static void main(String[] args) throws Exception {
 		final BasicPhysicsEngineUsingBox2D game = new BasicPhysicsEngineUsingBox2D();
 		final BasicView view = new BasicView(game);

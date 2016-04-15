@@ -22,7 +22,7 @@ public class BasicPlayer extends BasicPolygon {
     
     @Override
     public void notificationOfNewTimestep() {
-        if (rollingFriction>0) {
+        if (rollingFriction > 0) {
                 Vec2 rollingFrictionForce=new Vec2(body.getLinearVelocity());
                 rollingFrictionForce=rollingFrictionForce.mul(-rollingFriction*mass);
                 body.applyForceToCenter(rollingFrictionForce);

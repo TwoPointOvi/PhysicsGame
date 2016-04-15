@@ -29,6 +29,8 @@ public class BasicParticle  {
 		bodyDef.type = BodyType.DYNAMIC; // this says the physics engine is to move it automatically
 		bodyDef.position.set(sx, sy);
 		bodyDef.linearVelocity.set(vx, vy);
+                bodyDef.linearDamping = 0f;
+                bodyDef.setLinearDamping(0f);
 		this.body = w.createBody(bodyDef);
 		CircleShape circleShape = new CircleShape();// This class is from Box2D
 		circleShape.m_radius = radius;
@@ -37,6 +39,10 @@ public class BasicParticle  {
 		fixtureDef.density = (float) (mass/(Math.PI*radius*radius));
 		fixtureDef.friction = 0.0f;// this is surface friction;
 		fixtureDef.restitution = restitution;
+                
+                //Set the group index to a negative number so that particles do not collide with each other
+                fixtureDef.filter.groupIndex = -1;
+                
 		body.createFixture(fixtureDef);
 		this.rollingFriction=rollingFriction;
 		this.mass=mass;
