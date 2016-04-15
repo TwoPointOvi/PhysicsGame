@@ -37,17 +37,20 @@ public class BasicPhysicsEngineUsingBox2D {
 	// estimate for time between two frames in seconds 
 	public static final float DELTA_T = DELAY / 1000.0f;
 	
-        //Collision categories
-        int BOUNDARY = 0x0001;
-        int PLAYER = 0x0002;
-        int PARTICLE = 0x0003;
-        int BULLET = 0x0004;
+        //Particle Spawn
+        int iterations = 0;
         
         //Ball characteristics
         float ballRollingFriction = 0f;
         float ballRadius = 0.15f;
         float ballMass = 2f;
         float ballRestitition = 1.0f;
+        
+        //Starting ball characteristics
+        float s=1.2f;
+        float startingPosYBall = WORLD_HEIGHT/2+2f;
+        float startingVelXBall = 1.0f*s;
+        float startingVelYBall = 0;
         
         //Bullet characteristics
         float bulletRollingFriction = 0f;
@@ -100,9 +103,9 @@ public class BasicPhysicsEngineUsingBox2D {
 //			rectangles.add(new BasicRectangle(WORLD_WIDTH/2,WORLD_HEIGHT*3/4,  -4,3, r*4, r*8, 0, 5,  false, Color.BLUE, 1,0.5));
 //			public BasicRectangle(double sx, double sy, double vx, double vy, double width, double height, double orientation, double angularVeloctiy, boolean improvedEuler, Color col, double mass) {
 
-		float s=1.2f;
-		particles.add(new BasicParticle(0,WORLD_HEIGHT/2+2f,1.0f*s,0, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
-		particles.add(new BasicParticle(5*WORLD_WIDTH/6,WORLD_HEIGHT/2+2f,-1.0f*s,0, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
+		
+		particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
+		particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*2,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*4,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.3f,-1.2f*s,1.2f*s, r*2,Color.WHITE, 1, rollingFriction,5));
@@ -161,7 +164,7 @@ public class BasicPhysicsEngineUsingBox2D {
 	public static void main(String[] args) throws Exception {
 		final BasicPhysicsEngineUsingBox2D game = new BasicPhysicsEngineUsingBox2D();
 		final BasicView view = new BasicView(game);
-		JEasyFrame frame = new JEasyFrame(view, "Basic Physics Engine");
+		JEasyFrame frame = new JEasyFrame(view, "Particle");
 		frame.addKeyListener(new BasicKeyListener());
 		view.addMouseMotionListener(new BasicMouseListener());
 		game.startThread(view);
@@ -192,14 +195,27 @@ public class BasicPhysicsEngineUsingBox2D {
                     BasicKeyListener.falseSpaceKey();
                 }
                 
-		for (BasicParticle p:particles) {
-			// give the objects an opportunity to add any bespoke forces, e.g. rolling friction
-			p.notificationOfNewTimestep();
+                for (int i = 0; i < particles.size(); i++) {
+		//for (BasicParticle p:particles) {
+                    BasicParticle p = particles.get(i);
+                    // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
+                    p.notificationOfNewTimestep();
 		}
-		for (BasicPolygon p:polygons) {
-			// give the objects an opportunity to add any bespoke forces, e.g. rolling friction
-			p.notificationOfNewTimestep();
+                
+                for (int i = 0; i < polygons.size(); i++) {
+		//for (BasicPolygon p:polygons) {
+                    BasicPolygon p = polygons.get(i);
+                    // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
+                    p.notificationOfNewTimestep();
 		}
+                
+                iterations++;
+                if (iterations > 500) {
+                    particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
+                    particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
+                    iterations = 0;
+                }
+                
 		world.step(DELTA_T, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 	}
 	

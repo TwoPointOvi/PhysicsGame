@@ -30,14 +30,14 @@ public class ThreadedGuiForPhysicsEngine {
 		mainPanel.add(view, BorderLayout.CENTER);
 		JPanel sidePanel=new JPanel();
 		sidePanel.setLayout(new FlowLayout());
-		jButton_go=new JButton("Go");
+		jButton_go=new JButton("Play!");
 		sidePanel.add(jButton_go);
 		mainPanel.add(sidePanel, BorderLayout.WEST);
 		// add any new buttons or textfields to side panel here...
 		
 		JComponent topPanel=new JPanel();
 		topPanel.setLayout(new FlowLayout());
-		topPanel.add(new JLabel("Text"));
+		topPanel.add(new JLabel("Particle Killer"));
 		mainPanel.add(topPanel, BorderLayout.NORTH);
 		
 		JEasyFrame frame = new JEasyFrame(mainPanel, "Basic Physics Engine");
