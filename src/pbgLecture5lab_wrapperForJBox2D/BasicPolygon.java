@@ -24,14 +24,15 @@ public class BasicPolygon  {
 
 	public final float rollingFriction,mass;
 	public final Color col;
+        public boolean destroyed = false;
 	protected final Body body;
 	private final Path2D.Float polygonPath;
 
 	public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides) {
 		this(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides);
 	}
-        public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides, BodyType bType) {
-		this(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides,bType);
+        public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides, BodyType bType, String data) {
+		this(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides,bType,data);
 	}
 	public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, Path2D.Float polygonPath, int numSides) {
 		World w=BasicPhysicsEngineUsingBox2D.world; // a Box2D object
@@ -72,7 +73,7 @@ public class BasicPolygon  {
 		this.polygonPath=polygonPath;
 	}
 	
-        public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, Path2D.Float polygonPath, int numSides, BodyType bType) {
+        public BasicPolygon(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, Path2D.Float polygonPath, int numSides, BodyType bType, String data) {
 		World w=BasicPhysicsEngineUsingBox2D.world; // a Box2D object
 		BodyDef bodyDef = new BodyDef();  // a Box2D object
 		bodyDef.type = bType;
@@ -80,6 +81,7 @@ public class BasicPolygon  {
 		bodyDef.linearVelocity.set(vx, vy);
 		bodyDef.angularDamping = 0.0f;
                 bodyDef.angle = (float)((float) 45 / 180 * Math.PI); //change the angle of object
+                bodyDef.userData = data;
 		this.body = w.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		Vec2[] vertices = verticesOfPath2D(polygonPath, numSides);
@@ -132,6 +134,11 @@ public class BasicPolygon  {
 			rollingFrictionForce=rollingFrictionForce.mul(-rollingFriction*mass);
 			body.applyForceToCenter(rollingFrictionForce);
 		}
+                
+                if (CollisionDetection.collisionBetweenParticleAndBullet && CollisionDetection.bulletCollidingBody == this.body) {
+                    destroyed = true;
+                    body.getWorld().destroyBody(body);
+                }
 	}
 	
 	// Vec2 vertices of Path2D

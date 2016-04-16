@@ -21,16 +21,18 @@ public class BasicParticle  {
 	private final float rollingFriction,mass;
 	public final Color col;
 	protected final Body body;
+        public int life = 0;
+        public boolean destroyed = false;
 
 
-	public BasicParticle(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, float restitution) {
+	public BasicParticle(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, float restitution, String data) {
 		World w=BasicPhysicsEngineUsingBox2D.world; // a Box2D object
 		BodyDef bodyDef = new BodyDef();  // a Box2D object
 		bodyDef.type = BodyType.DYNAMIC; // this says the physics engine is to move it automatically
 		bodyDef.position.set(sx, sy);
 		bodyDef.linearVelocity.set(vx, vy);
                 bodyDef.linearDamping = 0f;
-                bodyDef.setLinearDamping(0f);
+                bodyDef.userData = data;
 		this.body = w.createBody(bodyDef);
 		CircleShape circleShape = new CircleShape();// This class is from Box2D
 		circleShape.m_radius = radius;
@@ -48,6 +50,8 @@ public class BasicParticle  {
 		this.mass=mass;
 		this.SCREEN_RADIUS=(int)Math.max(BasicPhysicsEngineUsingBox2D.convertWorldLengthToScreenLength(radius),1);
 		this.col=col;
+                
+                setLife(radius);
 	}
 
 	public void draw(Graphics2D g) {
@@ -59,13 +63,23 @@ public class BasicParticle  {
 
 
 	public void notificationOfNewTimestep() {
-		if (rollingFriction>0) {
+		if (rollingFriction > 0) {
 			Vec2 rollingFrictionForce=new Vec2(body.getLinearVelocity());
 			rollingFrictionForce=rollingFrictionForce.mul(-rollingFriction*mass);
 			body.applyForceToCenter(rollingFrictionForce);
 			
 		}
-		
+                
+                if (CollisionDetection.collisionBetweenParticleAndBullet  && CollisionDetection.particleCollidingBody == this.body) {
+                    life--;
+                    if (life <= 0) {
+                        destroyed = true;
+                        body.getWorld().destroyBody(body);
+                    }
+                }
 	}
-	
+        
+        public void setLife(float l) {
+            life = (int) l*10;
+        }
 }

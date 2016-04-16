@@ -16,8 +16,8 @@ public class BasicPlayer extends BasicPolygon {
     
 
     
-    public BasicPlayer(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides, BodyType bType) {
-        super(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides,bType);
+    public BasicPlayer(float sx, float sy, float vx, float vy, float radius, Color col, float mass, float rollingFriction, int numSides, BodyType bType, String data) {
+        super(sx, sy, vx, vy, radius, col, mass, rollingFriction,mkRegularPolygon(numSides, radius),numSides,bType,data);
     }
     
     @Override

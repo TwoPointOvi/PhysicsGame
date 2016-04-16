@@ -37,6 +37,14 @@ public class BasicPhysicsEngineUsingBox2D {
 	// estimate for time between two frames in seconds 
 	public static final float DELTA_T = DELAY / 1000.0f;
 	
+        //Score
+        public int score;
+        
+        //Identifiers
+        private String particle = "particle";
+        private String bullet = "bullet";
+        private String player = "player";
+        
         //Particle Spawn
         int iterations = 0;
         
@@ -91,7 +99,11 @@ public class BasicPhysicsEngineUsingBox2D {
 	public BasicPhysicsEngineUsingBox2D() {
 		world = new World(new Vec2(0, -GRAVITY));// create Box2D container for everything
 		world.setContinuousPhysics(true);
-
+                CollisionDetection listener = new CollisionDetection();
+                world.setContactListener(listener);
+                
+                score = 0;
+                
 		particles = new ArrayList<BasicParticle>();
 		polygons = new ArrayList<BasicPolygon>();
 		barriers = new ArrayList<AnchoredBarrier>();
@@ -104,12 +116,12 @@ public class BasicPhysicsEngineUsingBox2D {
 //			public BasicRectangle(double sx, double sy, double vx, double vy, double width, double height, double orientation, double angularVeloctiy, boolean improvedEuler, Color col, double mass) {
 
 		
-		particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
-		particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
+		particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+		particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*2,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.4f,-1.5f*s,1.2f*s, r*4,Color.RED, 1, rollingFriction,3));
 		//polygons.add(new BasicPolygon(WORLD_WIDTH/2-2,WORLD_HEIGHT/2+1.3f,-1.2f*s,1.2f*s, r*2,Color.WHITE, 1, rollingFriction,5));
-		polygons.add(new BasicPlayer(WORLD_WIDTH/2,playerRadius,0,0, playerRadius,Color.YELLOW, 1, rollingFriction,4,BodyType.DYNAMIC));
+		polygons.add(new BasicPlayer(WORLD_WIDTH/2,playerRadius,0,0, playerRadius,Color.YELLOW, 1, rollingFriction,4,BodyType.DYNAMIC, player));
 		
 //		particles.add(new BasicParticle(WORLD_WIDTH/2+2,WORLD_HEIGHT/2+2f,-1.2f*s,-1.4f*s, r,Color.BLUE, 2, 0));
 //		particles.add(new BasicParticle(3*r+WORLD_WIDTH/2,WORLD_HEIGHT/2,2,6.7f, r*3,Color.BLUE, 90, 0));
@@ -191,7 +203,7 @@ public class BasicPhysicsEngineUsingBox2D {
                 if (BasicKeyListener.isSpaceKeyPressed()) {
                     float sx = polygons.get(0).getPosition().x;
                     float sy = polygons.get(0).getPosition().y;
-                    polygons.add(new BasicPolygon(sx,sy+0.3f,0,bulletSpeed, bulletRadius,Color.RED, bulletMass, bulletRollingFriction,3, BodyType.KINEMATIC));
+                    polygons.add(new BasicPolygon(sx,sy+0.3f,0,bulletSpeed, bulletRadius,Color.RED, bulletMass, bulletRollingFriction,3, BodyType.KINEMATIC,bullet));
                     BasicKeyListener.falseSpaceKey();
                 }
                 
@@ -199,21 +211,34 @@ public class BasicPhysicsEngineUsingBox2D {
 		//for (BasicParticle p:particles) {
                     BasicParticle p = particles.get(i);
                     // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
-                    p.notificationOfNewTimestep();
+                    if (!p.destroyed) {
+                        p.notificationOfNewTimestep();
+                    } else {
+                        score += 10;
+                        particles.remove(p);
+                    }
 		}
                 
                 for (int i = 0; i < polygons.size(); i++) {
 		//for (BasicPolygon p:polygons) {
                     BasicPolygon p = polygons.get(i);
                     // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
-                    p.notificationOfNewTimestep();
+                    if (!p.destroyed) {
+                        p.notificationOfNewTimestep();
+                    } else {
+                        polygons.remove(p);
+                    }
+                    
 		}
                 
                 iterations++;
-                if (iterations > 500) {
-                    particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
-                    particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition));
-                    iterations = 0;
+                if (iterations > 300) {
+                    if (iterations % 10 == 0) {
+                        particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                        particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                    }
+                    if (iterations > 380)
+                        iterations = 0;
                 }
                 
 		world.step(DELTA_T, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
@@ -221,5 +246,3 @@ public class BasicPhysicsEngineUsingBox2D {
 	
 
 }
-
-
