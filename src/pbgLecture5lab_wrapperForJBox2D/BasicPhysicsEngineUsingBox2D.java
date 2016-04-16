@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.joints.MouseJoint;
@@ -21,7 +22,7 @@ public class BasicPhysicsEngineUsingBox2D {
 	
 	// frame dimensions
 	public static final int SCREEN_HEIGHT = 480;
-	public static final int SCREEN_WIDTH = 860;
+	public static final int SCREEN_WIDTH = 800;
 	public static final Dimension FRAME_SIZE = new Dimension(
 			SCREEN_WIDTH, SCREEN_HEIGHT);
 	public static final float WORLD_WIDTH=10;//metres
@@ -66,6 +67,8 @@ public class BasicPhysicsEngineUsingBox2D {
         float bulletRadius = 0.05f;
         float bulletMass = 1f;
         float bulletRestitution = 0f;
+        boolean bulletWait = false;
+        int bulletWaitCount = 0;
         
         //Player characteristics
         float playerRadius = 0.3f;
@@ -200,11 +203,20 @@ public class BasicPhysicsEngineUsingBox2D {
 		int VELOCITY_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
 		int POSITION_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
                 
-                if (BasicKeyListener.isSpaceKeyPressed()) {
+                if (bulletWait) {
+                    bulletWaitCount++;
+                    if (bulletWaitCount > 10) {
+                        bulletWait = false;
+                    }
+                }
+                
+                if (BasicKeyListener.isSpaceKeyPressed() && !bulletWait) {
                     float sx = polygons.get(0).getPosition().x;
                     float sy = polygons.get(0).getPosition().y;
                     polygons.add(new BasicPolygon(sx,sy+0.3f,0,bulletSpeed, bulletRadius,Color.RED, bulletMass, bulletRollingFriction,3, BodyType.KINEMATIC,bullet));
                     BasicKeyListener.falseSpaceKey();
+                    bulletWaitCount = 0;
+                    bulletWait = true;
                 }
                 
                 for (int i = 0; i < particles.size(); i++) {
@@ -228,16 +240,15 @@ public class BasicPhysicsEngineUsingBox2D {
                     } else {
                         polygons.remove(p);
                     }
-                    
 		}
                 
                 iterations++;
                 if (iterations > 300) {
-                    if (iterations % 10 == 0) {
+                    if (iterations % 12 == 0) {
                         particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
                         particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
                     }
-                    if (iterations > 380)
+                    if (iterations > 396)
                         iterations = 0;
                 }
                 

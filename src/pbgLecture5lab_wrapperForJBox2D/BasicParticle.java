@@ -70,6 +70,7 @@ public class BasicParticle  {
 			
 		}
                 
+                //if (body.getTransform().p.x < -10 && body.getTransform().p.y < -10) {
                 if (CollisionDetection.collisionBetweenParticleAndBullet  && CollisionDetection.particleCollidingBody == this.body) {
                     life--;
                     if (life <= 0) {

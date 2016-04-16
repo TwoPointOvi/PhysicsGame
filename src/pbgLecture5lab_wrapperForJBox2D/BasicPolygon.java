@@ -135,6 +135,7 @@ public class BasicPolygon  {
 			body.applyForceToCenter(rollingFrictionForce);
 		}
                 
+                //if (body.getTransform().p.x < - 10 && body.getTransform().p.y < -10) {
                 if (CollisionDetection.collisionBetweenParticleAndBullet && CollisionDetection.bulletCollidingBody == this.body) {
                     destroyed = true;
                     body.getWorld().destroyBody(body);

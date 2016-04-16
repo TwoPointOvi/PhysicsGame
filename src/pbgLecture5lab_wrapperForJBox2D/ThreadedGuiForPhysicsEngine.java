@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 
 public class ThreadedGuiForPhysicsEngine {
@@ -21,6 +23,7 @@ public class ThreadedGuiForPhysicsEngine {
 	}
 
 	private static JButton jButton_go;
+        private static JTextField scoreTextField;
 	private static Thread theThread;
 	public static void main(String[] args) throws Exception {
 		BasicPhysicsEngineUsingBox2D game = new BasicPhysicsEngineUsingBox2D ();
@@ -32,9 +35,14 @@ public class ThreadedGuiForPhysicsEngine {
 		sidePanel.setLayout(new FlowLayout());
 		jButton_go=new JButton("Play!");
 		sidePanel.add(jButton_go);
-		mainPanel.add(sidePanel, BorderLayout.WEST);
 		// add any new buttons or textfields to side panel here...
-		
+		scoreTextField = new JTextField("");
+                scoreTextField.setEditable(false);
+                scoreTextField.setColumns(4);
+                sidePanel.add(new JLabel("Score: "));
+                sidePanel.add(scoreTextField);
+                mainPanel.add(sidePanel, BorderLayout.WEST);
+                
 		JComponent topPanel=new JPanel();
 		topPanel.setLayout(new FlowLayout());
 		topPanel.add(new JLabel("Particle Killer"));
@@ -74,6 +82,7 @@ public class ThreadedGuiForPhysicsEngine {
 	        	// this while loop will exit any time this method is called for a second time, because 
 	    		while (theThread==Thread.currentThread()) {
     				game.update();
+                                scoreTextField.setText(Integer.toString(game.score));
     				view.repaint();
 	    			try {
 						Thread.sleep(BasicPhysicsEngineUsingBox2D.DELAY);

@@ -8,6 +8,7 @@ package pbgLecture5lab_wrapperForJBox2D;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.contacts.Contact;
 
@@ -33,23 +34,26 @@ public class CollisionDetection implements ContactListener {
                 collisionBetweenParticleAndBullet = true;
                 bulletCollidingBody = contact.m_fixtureA.m_body;
                 particleCollidingBody = contact.m_fixtureB.m_body;
-                System.out.println("Boom");
+                
+                //bulletCollidingBody.setTransform(new Vec2(-200f, -200f), 0);
+                //particleCollidingBody.setTransform(new Vec2(-200f, -200f), 0);
             } else if (aux.equals("particle") && aux2.equals("bullet")) {
                 collisionBetweenParticleAndBullet = true;
                 particleCollidingBody = contact.m_fixtureA.m_body;
                 bulletCollidingBody = contact.m_fixtureB.m_body;
+                
+                //bulletCollidingBody.setTransform(new Vec2(-200f, -200f), 0);
+                //particleCollidingBody.setTransform(new Vec2(-200f, -200f), 0);
             }
             
             if (aux.equals("player") && aux2.equals("particle")) {
                 collisionBetweenParticleAndPlayer = true;
                 playerCollidingBody = contact.m_fixtureA.m_body;
                 particleCollidingBody = contact.m_fixtureB.m_body;
-                System.exit(1);
             } else if (aux.equals("particle") && aux2.equals("player")) {
                 collisionBetweenParticleAndPlayer = true;
                 particleCollidingBody = contact.m_fixtureA.m_body;
                 playerCollidingBody = contact.m_fixtureB.m_body;
-                System.exit(1);
             }
         }
         
@@ -63,15 +67,15 @@ public class CollisionDetection implements ContactListener {
         
         if (aux != null && aux2 != null) {
             if (aux.equals("bullet") && aux2.equals("particle")) {
-                collisionBetweenParticleAndBullet = false;
+                collisionBetweenParticleAndBullet = true;
             } else if (aux.equals("particle") && aux2.equals("bullet")) {
-                collisionBetweenParticleAndBullet = false;
+                collisionBetweenParticleAndBullet = true;
             }
             
             if (aux.equals("player") && aux2.equals("particle")) {
-                collisionBetweenParticleAndPlayer = true;
+                collisionBetweenParticleAndPlayer = false;
             } else if (aux.equals("particle") && aux2.equals("player")) {
-                collisionBetweenParticleAndPlayer = true;
+                collisionBetweenParticleAndPlayer = false;
             }
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
