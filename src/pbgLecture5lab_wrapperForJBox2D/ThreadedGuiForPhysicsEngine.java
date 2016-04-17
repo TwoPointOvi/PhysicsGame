@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 
 import javax.swing.JButton;
@@ -59,6 +61,8 @@ public class ThreadedGuiForPhysicsEngine {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource()==jButton_go) {
 					try {
+                                                CollisionDetection.collisionBetweenParticleAndBullet = false;
+                                                CollisionDetection.collisionBetweenParticleAndPlayer = false;
 						// recreate all particles in their original positions:
 						final BasicPhysicsEngineUsingBox2D game2 = new BasicPhysicsEngineUsingBox2D ();
 						// Tell the view object to start displaying this new Physics engine instead:
@@ -81,7 +85,11 @@ public class ThreadedGuiForPhysicsEngine {
 	         public void run() {
 	        	// this while loop will exit any time this method is called for a second time, because 
 	    		while (theThread==Thread.currentThread()) {
-    				game.update();
+                                try {
+                                    game.update();
+                                } catch (InterruptedException ex) {
+                                    //Logger.getLogger(ThreadedGuiForPhysicsEngine.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                                 scoreTextField.setText(Integer.toString(game.score));
     				view.repaint();
 	    			try {

@@ -32,7 +32,7 @@ public class BasicParticle  {
 		bodyDef.position.set(sx, sy);
 		bodyDef.linearVelocity.set(vx, vy);
                 bodyDef.linearDamping = 0f;
-                bodyDef.userData = data;
+                bodyDef.userData = data; //set data for collision handling
 		this.body = w.createBody(bodyDef);
 		CircleShape circleShape = new CircleShape();// This class is from Box2D
 		circleShape.m_radius = radius;
@@ -51,6 +51,7 @@ public class BasicParticle  {
 		this.SCREEN_RADIUS=(int)Math.max(BasicPhysicsEngineUsingBox2D.convertWorldLengthToScreenLength(radius),1);
 		this.col=col;
                 
+                //Set particle lifes depending on the radius of it
                 setLife(radius);
 	}
 
@@ -70,12 +71,15 @@ public class BasicParticle  {
 			
 		}
                 
+                //Check if a collision between the bullet and particle occurred and if this is the object that caused it
+                //Destroy the body that had the collision
                 if (CollisionDetection.collisionBetweenParticleAndBullet  && CollisionDetection.particleCollidingBody == this.body) {
                     destroyed = true;
                     body.getWorld().destroyBody(body);
                 }
 	}
         
+        //Set the amount of lifes of the particle
         public void setLife(float l) {
             life = (int) (l*10);
         }

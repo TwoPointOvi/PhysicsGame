@@ -2,10 +2,14 @@ package pbgLecture5lab_wrapperForJBox2D;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JComponent;
+import static pbgLecture5lab_wrapperForJBox2D.BasicPhysicsEngineUsingBox2D.SCREEN_WIDTH;
+import static pbgLecture5lab_wrapperForJBox2D.BasicPhysicsEngineUsingBox2D.SCREEN_HEIGHT;
 
 public class BasicView extends JComponent {
 	/* Author: Michael Fairbank
@@ -40,6 +44,15 @@ public class BasicView extends JComponent {
 			c.draw(g);
 		for (AnchoredBarrier b : game.barriers)
 			b.draw(g);
+                
+                if (CollisionDetection.collisionBetweenParticleAndPlayer) {
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font(Font.SERIF, Font.BOLD, 40));
+                    FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
+                    String text = "You Lose!";
+                    int textLength = fontMetrics.stringWidth(text);
+                    g.drawString(text, SCREEN_WIDTH / 2 - textLength + 100, SCREEN_HEIGHT);
+                }
 	}
 
 	@Override

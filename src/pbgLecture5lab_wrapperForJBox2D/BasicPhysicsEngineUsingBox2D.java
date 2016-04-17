@@ -2,6 +2,9 @@ package pbgLecture5lab_wrapperForJBox2D;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -165,7 +168,7 @@ public class BasicPhysicsEngineUsingBox2D {
 	public static void main(String[] args) throws Exception {
 		final BasicPhysicsEngineUsingBox2D game = new BasicPhysicsEngineUsingBox2D();
 		final BasicView view = new BasicView(game);
-		JEasyFrame frame = new JEasyFrame(view, "Particle");
+		JEasyFrame frame = new JEasyFrame(view, "Particle Killer");
 		frame.addKeyListener(new BasicKeyListener());
 		view.addMouseMotionListener(new BasicMouseListener());
 		game.startThread(view);
@@ -185,70 +188,82 @@ public class BasicPhysicsEngineUsingBox2D {
 	
 
 
-	public void update() {
+	public void update() throws InterruptedException {
 		int VELOCITY_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
 		int POSITION_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
                 
-                if (bulletWait) {
-                    bulletWaitCount++;
-                    if (bulletWaitCount > 10) {
-                        bulletWait = false;
-                    }
-                }
-                
-                if (BasicKeyListener.isSpaceKeyPressed() && !bulletWait) {
-                    float sx = polygons.get(0).getPosition().x;
-                    float sy = polygons.get(0).getPosition().y;
-                    polygons.add(new BasicPolygon(sx,sy+0.3f,0,bulletSpeed, bulletRadius,Color.RED, bulletMass, bulletRollingFriction,3, BodyType.KINEMATIC,bullet));
-                    BasicKeyListener.falseSpaceKey();
-                    bulletWaitCount = 0;
-                    bulletWait = true;
-                }
-                
-                int auxLife;
-                Vec2 auxPosVec2;
-                for (int i = 0; i < particles.size(); i++) {
-		//for (BasicParticle p:particles) {
-                    BasicParticle p = particles.get(i);
-                    // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
-                    if (!p.destroyed) {
-                        p.notificationOfNewTimestep();
-                    } else {
-                        score += 10;
-                        auxLife = p.life;
-                        auxLife--;
-                        particles.remove(p);
-                        if (auxLife > 0) {
-                            auxPosVec2 = p.body.getTransform().p;
-                            particles.add(new BasicParticle(auxPosVec2.x,auxPosVec2.y,startingVelXBall,startingVelYBall, (float)auxLife/10,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
-                            particles.add(new BasicParticle(auxPosVec2.x,auxPosVec2.y,-startingVelXBall,startingVelYBall, (float)auxLife/10,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                if (!CollisionDetection.collisionBetweenParticleAndPlayer) {
+                    //If the player shooted count recovery time
+                    if (bulletWait) {
+                        bulletWaitCount++;
+                        if (bulletWaitCount > 10) {
+                            bulletWait = false;
                         }
                     }
-		}
-                
-                for (int i = 0; i < polygons.size(); i++) {
-		//for (BasicPolygon p:polygons) {
-                    BasicPolygon p = polygons.get(i);
-                    // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
-                    if (!p.destroyed) {
-                        p.notificationOfNewTimestep();
-                    } else {
-                        polygons.remove(p);
-                    }
-		}
-                
-                iterations++;
-                if (iterations > 300) {
-                    if (iterations % 40 == 0) {
-                        particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
-                        particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
-                    }
-                    if (iterations > 380)
-                        iterations = 0;
-                }
-                
-		world.step(DELTA_T, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-	}
-	
 
+                    //Check if the space bar is pressed and if enough time has passed to shoot
+                    if (BasicKeyListener.isSpaceKeyPressed() && !bulletWait) {
+                        float sx = polygons.get(0).getPosition().x;
+                        float sy = polygons.get(0).getPosition().y;
+                        polygons.add(new BasicPolygon(sx,sy+0.3f,0,bulletSpeed, bulletRadius,Color.RED, bulletMass, bulletRollingFriction,3, BodyType.KINEMATIC,bullet));
+                        BasicKeyListener.falseSpaceKey();
+                        bulletWaitCount = 0;
+                        bulletWait = true;
+                    }
+
+                    //Update particles
+                    int auxLife;
+                    Vec2 auxPosVec2;
+                    for (int i = 0; i < particles.size(); i++) {
+                    //for (BasicParticle p:particles) {
+                        BasicParticle p = particles.get(i);
+                        // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
+                        //Check is the particle is destroyed
+                        if (!p.destroyed) {
+                            p.notificationOfNewTimestep();
+                        } else {
+                            //if the particle is destroyed add points to the score and reduce a life to the particle
+                            score += 10;
+                            auxLife = p.life;
+                            auxLife--;
+                            particles.remove(p);
+                            //If the destroyed particle still has lifes spawn two smaller particles at the particles last position
+                            if (auxLife > 0) {
+                                auxPosVec2 = p.body.getTransform().p;
+                                particles.add(new BasicParticle(auxPosVec2.x,auxPosVec2.y,startingVelXBall,startingVelYBall, (float)auxLife/10,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                                particles.add(new BasicParticle(auxPosVec2.x,auxPosVec2.y,-startingVelXBall,startingVelYBall, (float)auxLife/10,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                            }
+                        }
+                    }
+
+                    //Update polygons
+                    for (int i = 0; i < polygons.size(); i++) {
+                    //for (BasicPolygon p:polygons) {
+                        BasicPolygon p = polygons.get(i);
+                        // give the objects an opportunity to add any bespoke forces, e.g. rolling friction
+                        if (!p.destroyed) {
+                            p.notificationOfNewTimestep();
+                        } else {
+                            polygons.remove(p);
+                        }
+                    }
+
+                    //Wait time for spawning of new bouncing particles
+                    iterations++;
+                    if (iterations > 300) {
+                        if (iterations % 50 == 0) {
+                            particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                            particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                        }
+                        if (iterations > 400)
+                            iterations = 0;
+                    }
+
+                    //update world
+                    world.step(DELTA_T, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+                } else {
+                    //Stop the world from moving
+                    world.step(0, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+                }
+	}
 }

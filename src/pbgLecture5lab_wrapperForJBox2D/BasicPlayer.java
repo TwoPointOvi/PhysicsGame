@@ -28,9 +28,21 @@ public class BasicPlayer extends BasicPolygon {
                 body.applyForceToCenter(rollingFrictionForce);
         }
         
+        //Checks collisiton between the particle and the player
+        //If it is end the game
+        if (CollisionDetection.collisionBetweenParticleAndPlayer && CollisionDetection.playerCollidingBody == this.body) {
+            destroyed = true;
+            body.getWorld().destroyBody(body);
+        }
+        
+        //Checks if the left key is pressed
+        //If it is pressed apply a force to move the object to the left
         if(BasicKeyListener.isLeftKeyPressed()) {
             body.applyForceToCenter(new Vec2(-0.1f,0));
         }
+        
+        //Checks if the right key is pressed
+        //If it is pressed apply a force to move the object to the right
         if(BasicKeyListener.isRightKeyPressed()) {
             body.applyForceToCenter(new Vec2(0.1f,0));
         }

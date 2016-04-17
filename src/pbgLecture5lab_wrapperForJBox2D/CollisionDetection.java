@@ -70,9 +70,9 @@ public class CollisionDetection implements ContactListener {
             }
             
             if (aux.equals("player") && aux2.equals("particle")) {
-                collisionBetweenParticleAndPlayer = false;
+                collisionBetweenParticleAndPlayer = true;
             } else if (aux.equals("particle") && aux2.equals("player")) {
-                collisionBetweenParticleAndPlayer = false;
+                collisionBetweenParticleAndPlayer = true;
             }
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

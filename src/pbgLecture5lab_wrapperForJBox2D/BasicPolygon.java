@@ -93,19 +93,6 @@ public class BasicPolygon  {
 		fixtureDef.restitution = 0.5f;
 		body.createFixture(fixtureDef);
 
-//		// code to test adding a second fixture:
-//		PolygonShape shape2 = new PolygonShape();
-//		Vec2[] vertices2 = verticesOfPath2D(polygonPath, numSides);
-//		for (int i=0;i<vertices2.length;i++) {
-//			vertices2[i]=new Vec2(vertices2[i].x+0.7f,vertices2[i].y+0.7f);
-//		}
-//		shape2.set(vertices2, numSides);
-//		FixtureDef fixtureDef2 = new FixtureDef();// This class is from Box2D
-//		fixtureDef2.shape = shape2;
-//		fixtureDef2.density = 1;//(float) (mass/(Math.PI*radius*radius));
-//		fixtureDef2.friction = 0.1f;
-//		fixtureDef2.restitution = 0.5f;
-//		body.createFixture(fixtureDef2);
 		this.rollingFriction=rollingFriction;
 		this.mass=mass;
 		this.ratioOfScreenScaleToWorldScale=BasicPhysicsEngineUsingBox2D.convertWorldLengthToScreenLength(1);
@@ -135,7 +122,9 @@ public class BasicPolygon  {
 			body.applyForceToCenter(rollingFrictionForce);
 		}
                 
-                //if (body.getTransform().p.x < - 10 && body.getTransform().p.y < -10) {
+                
+                //Check if there is a collision between the particle and bullet
+                //If there is a collision remove the object from the world
                 if (CollisionDetection.collisionBetweenParticleAndBullet && CollisionDetection.bulletCollidingBody == this.body) {
                     destroyed = true;
                     body.getWorld().destroyBody(body);
