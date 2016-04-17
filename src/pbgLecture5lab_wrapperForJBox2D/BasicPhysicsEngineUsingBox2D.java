@@ -230,11 +230,11 @@ public class BasicPhysicsEngineUsingBox2D {
                     //Wait time for spawning of new bouncing particles
                     iterations++;
                     if (iterations > 300) {
-                        if (iterations % 50 == 0) {
+                        if (iterations % 150 == 0) {
                             particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
                             particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
                         }
-                        if (iterations > 400)
+                        if (iterations > 600)
                             iterations = 0;
                     }
 

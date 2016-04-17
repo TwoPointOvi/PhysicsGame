@@ -52,7 +52,7 @@ public class BasicView extends JComponent {
                     FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
                     String text = "You Lose!";
                     int textLength = fontMetrics.stringWidth(text);
-                    g.drawString(text, SCREEN_WIDTH / 2 - textLength + 100, SCREEN_HEIGHT);
+                    g.drawString(text, SCREEN_WIDTH / 2 - textLength + 100, SCREEN_HEIGHT / 2);
                 }
 	}
 
