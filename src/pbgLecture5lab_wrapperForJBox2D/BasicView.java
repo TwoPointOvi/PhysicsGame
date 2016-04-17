@@ -53,6 +53,13 @@ public class BasicView extends JComponent {
                     String text = "You Lose!";
                     int textLength = fontMetrics.stringWidth(text);
                     g.drawString(text, SCREEN_WIDTH / 2 - textLength + 100, SCREEN_HEIGHT / 2);
+                } else if (BasicKeyListener.isEnterKeyPressed()) {
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font(Font.SERIF, Font.BOLD, 40));
+                    FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
+                    String text = "Paused";
+                    int textLength = fontMetrics.stringWidth(text);
+                    g.drawString(text, SCREEN_WIDTH / 2 - textLength + 80, SCREEN_HEIGHT / 2);
                 }
 	}
 

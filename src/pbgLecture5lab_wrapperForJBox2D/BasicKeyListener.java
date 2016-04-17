@@ -8,7 +8,7 @@ public class BasicKeyListener extends KeyAdapter {
 	 * Creation Date: 2016-01-28
 	 * Significant changes applied:
 	 */
-	private static boolean rightKeyPressed, leftKeyPressed, spaceKeyPressed; 
+	private static boolean rightKeyPressed, leftKeyPressed, spaceKeyPressed, enterKeyPressed = false; 
 
 	public static boolean isRightKeyPressed() {
 		return rightKeyPressed;
@@ -20,6 +20,9 @@ public class BasicKeyListener extends KeyAdapter {
         
         public static boolean isSpaceKeyPressed() {
             return spaceKeyPressed;
+        }
+        public static boolean isEnterKeyPressed() {
+            return enterKeyPressed;
         }
         public static void falseSpaceKey() {
             spaceKeyPressed=false;
@@ -36,6 +39,9 @@ public class BasicKeyListener extends KeyAdapter {
                     break;
                 case KeyEvent.VK_SPACE:
                     spaceKeyPressed=true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    enterKeyPressed = !enterKeyPressed;
                     break;
 		}
 	}

@@ -50,7 +50,7 @@ public class ThreadedGuiForPhysicsEngine {
 		topPanel.add(new JLabel("Particle Killer"));
 		mainPanel.add(topPanel, BorderLayout.NORTH);
 		
-		JEasyFrame frame = new JEasyFrame(mainPanel, "Basic Physics Engine");
+		JEasyFrame frame = new JEasyFrame(mainPanel, "Particle Killer");
 		view.addKeyListener(new BasicKeyListener());
 		view.addMouseMotionListener(new BasicMouseListener());
 

@@ -171,7 +171,7 @@ public class BasicPhysicsEngineUsingBox2D {
 		int VELOCITY_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
 		int POSITION_ITERATIONS=NUM_EULER_UPDATES_PER_SCREEN_REFRESH;
                 
-                if (!CollisionDetection.collisionBetweenParticleAndPlayer) {
+                if (!CollisionDetection.collisionBetweenParticleAndPlayer && !BasicKeyListener.isEnterKeyPressed()) {
                     //If the player shooted count recovery time
                     if (bulletWait) {
                         bulletWaitCount++;
@@ -237,7 +237,7 @@ public class BasicPhysicsEngineUsingBox2D {
                         if (iterations > 600)
                             iterations = 0;
                     }
-
+                    
                     //update world
                     world.step(DELTA_T, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
                 } else {
