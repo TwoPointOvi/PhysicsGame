@@ -45,6 +45,7 @@ public class BasicView extends JComponent {
 		for (AnchoredBarrier b : game.barriers)
 			b.draw(g);
                 
+                //When the game is over draw a losing screen
                 if (CollisionDetection.collisionBetweenParticleAndPlayer) {
                     g.setColor(Color.WHITE);
                     g.setFont(new Font(Font.SERIF, Font.BOLD, 40));
