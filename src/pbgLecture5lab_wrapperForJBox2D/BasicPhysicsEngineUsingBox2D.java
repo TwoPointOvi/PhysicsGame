@@ -51,7 +51,7 @@ public class BasicPhysicsEngineUsingBox2D {
         
         //Ball characteristics
         float ballRollingFriction = 0f;
-        float ballRadius = 0.15f;
+        float ballRadius = 0.4f;
         float ballMass = 2f;
         float ballRestitition = 1.0f;
         
@@ -159,20 +159,6 @@ public class BasicPhysicsEngineUsingBox2D {
 				barriers.add(new AnchoredBarrier_StraightLine(0, WORLD_HEIGHT, 0, 0, Color.WHITE));
 				break;
 			}
-                        
-                        case PINBALL_ARENA: {
-				// These would be better created as a JBox2D "chain" type object for efficiency and potentially better collision detection at joints. 
-				// simple pinball board
-				barriers.add(new AnchoredBarrier_StraightLine(0, 0, WORLD_WIDTH, 0, Color.WHITE));
-				barriers.add(new AnchoredBarrier_StraightLine(WORLD_WIDTH, 0, WORLD_WIDTH, WORLD_HEIGHT, Color.WHITE));
-				barriers.add(new AnchoredBarrier_StraightLine(WORLD_WIDTH, WORLD_HEIGHT, 0, WORLD_HEIGHT, Color.WHITE));
-				barriers.add(new AnchoredBarrier_StraightLine(0, WORLD_HEIGHT, 0, 0, Color.WHITE));
-				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH/2, WORLD_HEIGHT-WORLD_WIDTH/2, WORLD_WIDTH/2, 0.0f, 200.0f,Color.WHITE));
-				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH/2, WORLD_HEIGHT*3/4, WORLD_WIDTH/15, -0.0f, 360.0f,Color.WHITE));
-				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH*1/3, WORLD_HEIGHT*1/2, WORLD_WIDTH/15, -0.0f, 360.0f,Color.WHITE));
-				barriers.add(new AnchoredBarrier_Curve(WORLD_WIDTH*2/3, WORLD_HEIGHT*1/2, WORLD_WIDTH/15, -0.0f, 360.0f,Color.WHITE));
-				break;
-			}
 		}
 	}
         
@@ -219,6 +205,8 @@ public class BasicPhysicsEngineUsingBox2D {
                     bulletWait = true;
                 }
                 
+                int auxLife;
+                Vec2 auxPosVec2;
                 for (int i = 0; i < particles.size(); i++) {
 		//for (BasicParticle p:particles) {
                     BasicParticle p = particles.get(i);
@@ -227,7 +215,14 @@ public class BasicPhysicsEngineUsingBox2D {
                         p.notificationOfNewTimestep();
                     } else {
                         score += 10;
+                        auxLife = p.life;
+                        auxLife--;
                         particles.remove(p);
+                        if (auxLife > 0) {
+                            auxPosVec2 = p.body.getTransform().p;
+                            particles.add(new BasicParticle(auxPosVec2.x,auxPosVec2.y,startingVelXBall,startingVelYBall, (float)auxLife/10,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                            particles.add(new BasicParticle(auxPosVec2.x,auxPosVec2.y,-startingVelXBall,startingVelYBall, (float)auxLife/10,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
+                        }
                     }
 		}
                 
@@ -244,11 +239,11 @@ public class BasicPhysicsEngineUsingBox2D {
                 
                 iterations++;
                 if (iterations > 300) {
-                    if (iterations % 12 == 0) {
+                    if (iterations % 40 == 0) {
                         particles.add(new BasicParticle(0,startingPosYBall,startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
                         particles.add(new BasicParticle(WORLD_WIDTH,startingPosYBall,-startingVelXBall,startingVelYBall, ballRadius,Color.GREEN, ballMass, ballRollingFriction, ballRestitition, particle));
                     }
-                    if (iterations > 396)
+                    if (iterations > 380)
                         iterations = 0;
                 }
                 

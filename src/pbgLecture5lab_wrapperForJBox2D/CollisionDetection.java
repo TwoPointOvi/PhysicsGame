@@ -41,9 +41,6 @@ public class CollisionDetection implements ContactListener {
                 collisionBetweenParticleAndBullet = true;
                 particleCollidingBody = contact.m_fixtureA.m_body;
                 bulletCollidingBody = contact.m_fixtureB.m_body;
-                
-                //bulletCollidingBody.setTransform(new Vec2(-200f, -200f), 0);
-                //particleCollidingBody.setTransform(new Vec2(-200f, -200f), 0);
             }
             
             if (aux.equals("player") && aux2.equals("particle")) {

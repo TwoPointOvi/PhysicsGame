@@ -70,17 +70,13 @@ public class BasicParticle  {
 			
 		}
                 
-                //if (body.getTransform().p.x < -10 && body.getTransform().p.y < -10) {
                 if (CollisionDetection.collisionBetweenParticleAndBullet  && CollisionDetection.particleCollidingBody == this.body) {
-                    life--;
-                    if (life <= 0) {
-                        destroyed = true;
-                        body.getWorld().destroyBody(body);
-                    }
+                    destroyed = true;
+                    body.getWorld().destroyBody(body);
                 }
 	}
         
         public void setLife(float l) {
-            life = (int) l*10;
+            life = (int) (l*10);
         }
 }
